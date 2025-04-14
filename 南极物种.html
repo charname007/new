@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>南极地区生物数据分析</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* 布局样式 */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .chart-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      margin-top: 30px;
+    }
+    .chart-card {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 30px;
+    }
+    @media (max-width: 768px) {
+      .chart-container {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>南极地区生物数据分析平台</h2>
+    
+    <div class="chart-container">
+      <!-- 时间序列图 -->
+      <div class="chart-card">
+        <canvas id="recordChart"></canvas>
+      </div>
+
+      <!-- 生物类群分布图 -->
+      <div class="chart-card">
+        <canvas id="biologicalDonutChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 时间序列图数据
+    const rawData = [
+      // 原时间序列数据...（保持原数据不变）
+    ];
+
+    // 创建时间序列图
+    const timeCtx = document.getElementById('recordChart').getContext('2d');
+    new Chart(timeCtx, {
+      type: 'bar',
+      data: {
+        labels: rawData.map(item => item.year),
+        datasets: [{
+          label: '记录数',
+          data: rawData.map(item => item.records),
+          backgroundColor: 'rgba(210, 100, 80, 0.5)',
+          borderColor: 'rgba(210, 100, 80, 1)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: {
+            title: { display: true, text: '年份' },
+            ticks: {
+              maxTicksLimit: 20,
+              autoSkip: true,
+              maxRotation: 45,
+              minRotation: 45
+            }
+          },
+          y: {
+            title: { display: true, text: '记录数' },
+            beginAtZero: true
+          }
+        },
+        plugins: {
+          title: { display: true, text: '每年记录数变化图' },
+          legend: { display: false }
+        }
+      }
+    });
+
+    // 创建生物类群分布图
+    const donutCtx = document.getElementById('biologicalDonutChart').getContext('2d');
+    new Chart(donutCtx, {
+      type: 'doughnut',
+      data: {
+        labels: ['哺乳动物', '鸟类', '真虾类', '桡足类', '硬骨鱼类', '裸藻类', 'α变形菌', '硅藻类', '黄杆菌类', 'γ变形菌'],
+        datasets: [{
+          label: '类群占比',
+          data: [44.3, 20.3, 5.54, 3.65, 3.2, 2.48, 2.19, 1.87, 0.998, 0.889],
+          backgroundColor: [
+            '#e6848d', '#dea37c', '#f3cf8a', '#f2ebbe', '#c7e5ae',
+            '#b3e2cd', '#a3ccc5', '#87b5be', '#c2d8ec', '#e6e6e6'
+          ],
+          hoverOffset: 10
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'right',
+            labels: { font: { size: 14 } }
+          },
+          title: {
+            display: true,
+            text: '生物类群分布图',
+            font: { size: 18 }
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
