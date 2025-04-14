@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>南极地区生物类群分布</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <canvas id="biologicalDonutChart" width="400" height="400"></canvas>
+  <script>
+    const ctx = document.getElementById('biologicalDonutChart').getContext('2d');
+    const data = {
+      labels: [
+        '哺乳动物', '鸟类', '真虾类', '桡足类', '硬骨鱼类',
+        '裸藻类', 'α变形菌', '硅藻类',
+        '黄杆菌类', 'γ变形菌'
+      ],
+      datasets: [{
+        label: '类群占比',
+        data: [44.3, 20.3, 5.54, 3.65, 3.2, 2.48, 2.19, 1.87, 0.998, 0.889],
+        backgroundColor: [
+          '#e6848d', '#dea37c', '#f3cf8a', '#f2ebbe', '#c7e5ae',
+          '#b3e2cd', '#a3ccc5', '#87b5be', '#c2d8ec', '#e6e6e6'
+        ],
+        hoverOffset: 10
+      }]
+    };
+
+    const config = {
+      type: 'doughnut',
+      data: data,
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'right',
+            labels: {
+              font: {
+                size: 14
+              }
+            }
+          },
+          title: {
+            display: true,
+            text: '南极地区生物类群分布图',
+            font: {
+              size: 18
+            }
+          }
+        }
+      },
+    };
+
+    new Chart(ctx, config);
+  </script>
+</body>
+</html>
