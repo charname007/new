@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>南极地区生物数据分析</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* 布局样式 */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .chart-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      margin-top: 30px;
+    }
+    .chart-card {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 30px;
+    }
+    @media (max-width: 768px) {
+      .chart-container {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>南极地区生物数据分析平台</h2>
+    
+    <div class="chart-container">
+      <!-- 时间序列图 -->
+      <div class="chart-card">
+        <canvas id="recordChart"></canvas>
+      </div>
+
+      <!-- 生物类群分布图 -->
+      <div class="chart-card">
+        <canvas id="biologicalDonutChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 时间序列图完整数据
+    const rawData = [
+      {year: 1820, records: 3}, {year: 1824, records: 1}, {year: 1831, records: 11},
+      {year: 1841, records: 4}, {year: 1846, records: 1}, {year: 1850, records: 1},
+      {year: 1864, records: 3}, {year: 1866, records: 7}, {year: 1871, records: 1},
+      {year: 1872, records: 1}, {year: 1873, records: 2}, {year: 1874, records: 13},
+      {year: 1881, records: 1}, {year: 1887, records: 1}, {year: 1890, records: 1},
+      {year: 1892, records: 1}, {year: 1895, records: 3}, {year: 1897, records: 2},
+      {year: 1898, records: 546}, {year: 1899, records: 18}, {year: 1900, records: 18},
+      {year: 1901, records: 9}, {year: 1902, records: 198}, {year: 1903, records: 173},
+      {year: 1904, records: 97}, {year: 1905, records: 104}, {year: 1906, records: 1},
+      {year: 1907, records: 4}, {year: 1908, records: 82}, {year: 1909, records: 144},
+      {year: 1910, records: 245}, {year: 1911, records: 943}, {year: 1912, records: 1458},
+      {year: 1913, records: 1023}, {year: 1914, records: 650}, {year: 1915, records: 2},
+      {year: 1916, records: 20}, {year: 1918, records: 2}, {year: 1920, records: 2},
+      {year: 1921, records: 1}, {year: 1922, records: 72}, {year: 1923, records: 259},
+      {year: 1924, records: 337}, {year: 1925, records: 395}, {year: 1926, records: 329},
+      {year: 1927, records: 2788}, {year: 1928, records: 216}, {year: 1929, records: 1806},
+      {year: 1930, records: 2373}, {year: 1931, records: 1906}, {year: 1932, records: 113},
+      {year: 1933, records: 231}, {year: 1934, records: 648}, {year: 1935, records: 487},
+      {year: 1936, records: 374}, {year: 1937, records: 532}, {year: 1938, records: 409},
+      {year: 1939, records: 442}, {year: 1940, records: 233}, {year: 1941, records: 143},
+      {year: 1944, records: 23}, {year: 1945, records: 44}, {year: 1946, records: 124},
+      {year: 1947, records: 481}, {year: 1948, records: 555}, {year: 1949, records: 170},
+      {year: 1950, records: 249}, {year: 1951, records: 256}, {year: 1952, records: 206},
+      {year: 1953, records: 185}, {year: 1954, records: 204}, {year: 1955, records: 386},
+      {year: 1956, records: 1408}, {year: 1957, records: 1795}, {year: 1958, records: 1967},
+      {year: 1959, records: 1818}, {year: 1960, records: 978}, {year: 1961, records: 1930},
+      {year: 1962, records: 2263}, {year: 1963, records: 4829}, {year: 1964, records: 8752},
+      {year: 1965, records: 4645}, {year: 1966, records: 3594}, {year: 1967, records: 5479},
+      {year: 1968, records: 5048}, {year: 1969, records: 2678}, {year: 1970, records: 1153},
+      {year: 1971, records: 2086}, {year: 1972, records: 5034}, {year: 1973, records: 4058},
+      {year: 1974, records: 1773}, {year: 1975, records: 590}, {year: 1976, records: 1567},
+      {year: 1977, records: 813}, {year: 1978, records: 2207}, {year: 1979, records: 1841},
+      {year: 1980, records: 1968}, {year: 1981, records: 11901}, {year: 1982, records: 6168},
+      {year: 1983, records: 5701}, {year: 1984, records: 9646}, {year: 1985, records: 23007},
+      {year: 1986, records: 6320}, {year: 1987, records: 12475}, {year: 1988, records: 17214},
+      {year: 1989, records: 10531}, {year: 1990, records: 5435}, {year: 1991, records: 26839},
+      {year: 1992, records: 8409}, {year: 1993, records: 33828}, {year: 1994, records: 41686},
+      {year: 1995, records: 16101}, {year: 1996, records: 44986}, {year: 1997, records: 63845},
+      {year: 1998, records: 34165}, {year: 1999, records: 25670}, {year: 2000, records: 79286},
+      {year: 2001, records: 89686}, {year: 2002, records: 66066}, {year: 2003, records: 23475},
+      {year: 2004, records: 67346}, {year: 2005, records: 66345}, {year: 2006, records: 48764},
+      {year: 2007, records: 83673}, {year: 2008, records: 134542}, {year: 2009, records: 95740},
+      {year: 2010, records: 158711}, {year: 2011, records: 164688}, {year: 2012, records: 146444},
+      {year: 2013, records: 50095}, {year: 2014, records: 42200}, {year: 2015, records: 46189},
+      {year: 2016, records: 252941}, {year: 2017, records: 76360}, {year: 2018, records: 8236},
+      {year: 2019, records: 11710}, {year: 2020, records: 6758}, {year: 2021, records: 5159},
+      {year: 2022, records: 2101}, {year: 2023, records: 4854}, {year: 2024, records: 4087},
+      {year: 2025, records: 2201}
+    ];
+
+    // 创建时间序列图
+    const timeCtx = document.getElementById('recordChart').getContext('2d');
+    new Chart(timeCtx, {
+      type: 'bar',
+      data: {
+        labels: rawData.map(item => item.year),
+        datasets: [{
+          label: '记录数',
+          data: rawData.map(item => item.records),
+          backgroundColor: 'rgba(210, 100, 80, 0.5)',
+          borderColor: 'rgba(210, 100, 80, 1)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: {
+            title: { display: true, text: '年份' },
+            ticks: {
+              maxTicksLimit: 20,
+              autoSkip: true,
+              maxRotation: 45,
+              minRotation: 45
+            }
+          },
+          y: {
+            title: { display: true, text: '记录数' },
+            beginAtZero: true
+          }
+        },
+        plugins: {
+          title: { display: true, text: '每年记录数变化图' },
+          legend: { display: false }
+        }
+      }
+    });
+
+    // 创建生物类群分布图
+    const donutCtx = document.getElementById('biologicalDonutChart').getContext('2d');
+    new Chart(donutCtx, {
+      type: 'doughnut',
+      data: {
+        labels: ['哺乳动物', '鸟类', '真虾类', '桡足类', '硬骨鱼类', '裸藻类', 'α变形菌', '硅藻类', '黄杆菌类', 'γ变形菌'],
+        datasets: [{
+          label: '类群占比',
+          data: [44.3, 20.3, 5.54, 3.65, 3.2, 2.48, 2.19, 1.87, 0.998, 0.889],
+          backgroundColor: [
+            '#e6848d', '#dea37c', '#f3cf8a', '#f2ebbe', '#c7e5ae',
+            '#b3e2cd', '#a3ccc5', '#87b5be', '#c2d8ec', '#e6e6e6'
+          ],
+          hoverOffset: 10
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'right',
+            labels: { font: { size: 14 } }
+          },
+          title: {
+            display: true,
+            text: '生物类群分布图',
+            font: { size: 18 }
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
