@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>南极气候数据图表</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .container {
+            width: 80%;
+            margin: 40px auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <canvas id="climateChart"></canvas>
+    </div>
+
+    <script>
+        // 数据映射（月份数字转名称）
+        const monthNames = {
+            1: 'Jan', 2: 'Feb', 3: 'Mar', 4: 'Apr',
+            5: 'May', 6: 'Jun', 7: 'Jul', 8: 'Aug',
+            9: 'Sep', 10: 'Oct', 11: 'Nov', 12: 'Dec'
+        };
+
+        // 原始数据（按月份7-12,1-6排序）
+        const rawData = [
+            { 月份:7, 降水:44.8, 最低温:-13.8, 最高温:-5.3, 均温:-9.4, 昼长:6.5 },
+            { 月份:8, 降水:51.6, 最低温:-13, 最高温:-4.8, 均温:-8.6, 昼长:9 },
+            { 月份:9, 降水:48, 最低温:-9.4, 最高温:-2, 均温:-5.5, 昼长:11.9 },
+            { 月份:10, 降水:46.2, 最低温:-6, 最高温:0.1, 均温:-3.1, 昼长:14.8 },
+            { 月份:11, 降水:44.7, 最低温:-3.4, 最高温:1.5, 均温:-1.3, 昼长:17.4 },
+            { 月份:12, 降水:46.4, 最低温:-1.5, 最高温:2.4, 均温:0.1, 昼长:19 },
+            { 月份:1, 降水:43.9, 最低温:-0.9, 最高温:2.7, 均温:0.8, 昼长:18.1 },
+            { 月份:2, 降水:73.5, 最低温:-0.7, 最高温:2.9, 均温:1, 昼长:15.8 },
+            { 月份:3, 降水:73, 最低温:-1.8, 最高温:2, 均温:0.2, 昼长:13 },
+            { 月份:4, 降水:73.4, 最低温:-4.6, 最高温:-0.1, 均温:-2.3, 昼长:10.1 },
+            { 月份:5, 降水:62.6, 最低温:-8.5, 最高温:-2.5, 均温:-5.5, 昼长:7.4 },
+            { 月份:6, 降水:52.1, 最低温:-12.3, 最高温:-4.6, 均温:-8.4, 昼长:5.8 }
+        ];
+
+        // 处理标签和数据
+        const labels = rawData.map(item => monthNames[item.月份]);
+        const datasets = [
+            {
+                label: '降水量 (mm)',
+                data: rawData.map(item => item.降水),
+                type: 'bar',
+                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                yAxisID: 'y1',
+            },
+            {
+                label: '最低温 (°C)',
+                data: rawData.map(item => item.最低温),
+                borderColor: '#2c7bb6',
+                fill: false,
+                yAxisID: 'y2'
+            },
+            {
+                label: '最高温 (°C)',
+                data: rawData.map(item => item.最高温),
+                borderColor: '#d7191c',
+                fill: false,
+                yAxisID: 'y2'
+            },
+            {
+                label: '昼长 (小时)',
+                data: rawData.map(item => item.昼长),
+                borderColor: '#4daf4a',
+                fill: false,
+                yAxisID: 'y3',
+                borderDash: [5,5]
+            }
+        ];
+
+        // 图表配置
+        const config = {
+            type: 'line',
+            data: { labels, datasets },
+            options: {
+                responsive: true,
+                scales: {
+                    y1: {
+                        type: 'linear',
+                        position: 'left',
+                        title: { display: true, text: '降水量 (mm)' }
+                    },
+                    y2: {
+                        type: 'linear',
+                        position: 'right',
+                        title: { display: true, text: '温度 (°C)' },
+                        grid: { drawOnChartArea: false }
+                    },
+                    y3: {
+                        type: 'linear',
+                        position: 'right',
+                        title: { display: true, text: '昼长 (小时)' },
+                        grid: { drawOnChartArea: false }
+                    }
+                }
+            }
+        };
+
+        // 创建图表
+        new Chart(document.getElementById('climateChart'), config);
+    </script>
+</body>
+</html>
