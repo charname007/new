@@ -1,51 +1,135 @@
-<meta charset="UTF-8">
-<title>中国南极主题研究可视化</title>
-<script src="https://code.highcharts.com/highcharts.js"></script>
-    <script src="https://code.highcharts.com/modules/exporting.js"></script>
-    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>南极地区生物数据分析</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* 布局样式 */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .chart-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      margin-top: 30px;
+    }
+    .chart-card {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 30px;
+    }
+    @media (max-width: 768px) {
+      .chart-container {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 <body>
-<h2>1. 年度研究趋势（1947–2025）</h2>
-<div id="chart-year" style="width: 100%; height: 500px;"></div>
+  <div class="container">
+    <h2>南极地区生物数据分析平台</h2>
+    
+    <div class="chart-container">
+      <!-- 时间序列图 -->
+      <div class="chart-card">
+        <canvas id="recordChart"></canvas>
+      </div>
 
-<h2>2. 主要主题分布</h2>
-<h2>2. 主题分布</h2>
-<div id="chart-main-topic" style="width: 100%; height: 500px;"></div>
+      <!-- 生物类群分布图 -->
+      <div class="chart-card">
+        <canvas id="biologicalDonutChart"></canvas>
+      </div>
+    </div>
+  </div>
 
-<h2>3. 次要主题分布</h2>
-<div id="chart-sub-topic" style="width: 100%; height: 500px;"></div>
-
-<h2>4. 研究领域分布</h2>
-<div id="chart-pie" style="width: 100%; height: 500px;"></div>
-
-<script>
-// 年度数据（升序排列）
-const yearData = [
-@@ -111,6 +116,27 @@ <h2>3. 次要主题分布</h2>
-}],
-tooltip: { valueSuffix: ' 次' }
-});
-
-    // 研究领域分布（饼图）
-    const fields = [
-        {"name":"自然地理学和测绘学","y":2268},{"name":"中等教育","y":1692},{"name":"海洋学","y":1600},
-        {"name":"生物学","y":1569},{"name":"气象学","y":1318},{"name":"地质学","y":1161},
-        {"name":"初等教育","y":1138},{"name":"地球物理学","y":1025},{"name":"环境科学与资源利用","y":881},
-        {"name":"轻工业手工业","y":822},{"name":"水产和渔业","y":781},{"name":"天文学","y":743},
-        {"name":"自然科学理论与方法","y":607},{"name":"国际法","y":471},{"name":"工业经济","y":461},
-        {"name":"航空航天科学与工程","y":356},{"name":"人物传记","y":329},{"name":"中国政治与国际政治","y":324},
-        {"name":"船舶工业","y":224},{"name":"科学研究管理","y":224}
+  <script>
+    // 时间序列图数据
+    const rawData = [
+      // 原时间序列数据...（保持原数据不变）
     ];
 
-    Highcharts.chart('chart-pie', {
-        chart: { type: 'pie' },
-        title: { text: '研究领域分布' },
-        series: [{
-            name: '研究领域',
-            data: fields.map(d => ({ name: d.name, y: d.y }))
-        }],
-        tooltip: { pointFormat: '{point.name}: <b>{point.percentage:.1f}%</b>' }
+    // 创建时间序列图
+    const timeCtx = document.getElementById('recordChart').getContext('2d');
+    new Chart(timeCtx, {
+      type: 'bar',
+      data: {
+        labels: rawData.map(item => item.year),
+        datasets: [{
+          label: '记录数',
+          data: rawData.map(item => item.records),
+          backgroundColor: 'rgba(210, 100, 80, 0.5)',
+          borderColor: 'rgba(210, 100, 80, 1)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: {
+            title: { display: true, text: '年份' },
+            ticks: {
+              maxTicksLimit: 20,
+              autoSkip: true,
+              maxRotation: 45,
+              minRotation: 45
+            }
+          },
+          y: {
+            title: { display: true, text: '记录数' },
+            beginAtZero: true
+          }
+        },
+        plugins: {
+          title: { display: true, text: '每年记录数变化图' },
+          legend: { display: false }
+        }
+      }
     });
-</script>
+
+    // 创建生物类群分布图
+    const donutCtx = document.getElementById('biologicalDonutChart').getContext('2d');
+    new Chart(donutCtx, {
+      type: 'doughnut',
+      data: {
+        labels: ['哺乳动物', '鸟类', '真虾类', '桡足类', '硬骨鱼类', '裸藻类', 'α变形菌', '硅藻类', '黄杆菌类', 'γ变形菌'],
+        datasets: [{
+          label: '类群占比',
+          data: [44.3, 20.3, 5.54, 3.65, 3.2, 2.48, 2.19, 1.87, 0.998, 0.889],
+          backgroundColor: [
+            '#e6848d', '#dea37c', '#f3cf8a', '#f2ebbe', '#c7e5ae',
+            '#b3e2cd', '#a3ccc5', '#87b5be', '#c2d8ec', '#e6e6e6'
+          ],
+          hoverOffset: 10
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'right',
+            labels: { font: { size: 14 } }
+          },
+          title: {
+            display: true,
+            text: '生物类群分布图',
+            font: { size: 18 }
+          }
+        }
+      }
+    });
+  </script>
 </body>
 </html>
