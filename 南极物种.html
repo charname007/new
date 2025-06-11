@@ -1,0 +1,51 @@
+<meta charset="UTF-8">
+<title>中国南极主题研究可视化</title>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+</head>
+<body>
+<h2>1. 年度研究趋势（1947–2025）</h2>
+<div id="chart-year" style="width: 100%; height: 500px;"></div>
+
+<h2>2. 主要主题分布</h2>
+<h2>2. 主题分布</h2>
+<div id="chart-main-topic" style="width: 100%; height: 500px;"></div>
+
+<h2>3. 次要主题分布</h2>
+<div id="chart-sub-topic" style="width: 100%; height: 500px;"></div>
+
+<h2>4. 研究领域分布</h2>
+<div id="chart-pie" style="width: 100%; height: 500px;"></div>
+
+<script>
+// 年度数据（升序排列）
+const yearData = [
+@@ -111,6 +116,27 @@ <h2>3. 次要主题分布</h2>
+}],
+tooltip: { valueSuffix: ' 次' }
+});
+
+    // 研究领域分布（饼图）
+    const fields = [
+        {"name":"自然地理学和测绘学","y":2268},{"name":"中等教育","y":1692},{"name":"海洋学","y":1600},
+        {"name":"生物学","y":1569},{"name":"气象学","y":1318},{"name":"地质学","y":1161},
+        {"name":"初等教育","y":1138},{"name":"地球物理学","y":1025},{"name":"环境科学与资源利用","y":881},
+        {"name":"轻工业手工业","y":822},{"name":"水产和渔业","y":781},{"name":"天文学","y":743},
+        {"name":"自然科学理论与方法","y":607},{"name":"国际法","y":471},{"name":"工业经济","y":461},
+        {"name":"航空航天科学与工程","y":356},{"name":"人物传记","y":329},{"name":"中国政治与国际政治","y":324},
+        {"name":"船舶工业","y":224},{"name":"科学研究管理","y":224}
+    ];
+
+    Highcharts.chart('chart-pie', {
+        chart: { type: 'pie' },
+        title: { text: '研究领域分布' },
+        series: [{
+            name: '研究领域',
+            data: fields.map(d => ({ name: d.name, y: d.y }))
+        }],
+        tooltip: { pointFormat: '{point.name}: <b>{point.percentage:.1f}%</b>' }
+    });
+</script>
+</body>
+</html>
