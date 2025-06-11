@@ -1,29 +1,143 @@
-<h2>1. 年度研究趋势（1947–2025）</h2>
-<div id="chart-year" style="width: 100%; height: 500px;"></div>
+<!DOCTYPE html>
+<html lang="zh-CN">
 
-<h2>2. 主题分布</h2>
-<div id="chart-main-topic" style="width: 100%; height: 500px;"></div>
+<head>
+    <meta charset="UTF-8">
+    <title>中国南极主题研究可视化</title>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+</head>
 
-<h2>3. 次要主题分布</h2>
-<div id="chart-sub-topic" style="width: 100%; height: 500px;"></div>
+<body>
+    <h2>1. 年度研究趋势（1947–2025）</h2>
+    <div id="chart-year" style="width: 100%; height: 500px;"></div>
+    <h2>2–4. 主题与领域分布</h2>
 
-<h2>4. 研究领域分布</h2>
-<div id="chart-pie" style="width: 100%; height: 500px;"></div>
-<h2>2–4. 主题与领域分布</h2>
-<div style="display: flex; flex-wrap: nowrap; gap: 20px;">
-    <div id="chart-main-topic" style="flex: 1; min-width: 0; height: 500px;"></div>
-    <div id="chart-sub-topic" style="flex: 1; min-width: 0; height: 500px;"></div>
-    <div id="chart-pie" style="flex: 1; min-width: 0; height: 500px;"></div>
-</div>
+    <div style="display: flex; flex-wrap: nowrap; gap: 20px;">
+        <div id="chart-main-topic" style="flex: 1; min-width: 0; height: 500px;"></div>
+        <div id="chart-sub-topic" style="flex: 1; min-width: 0; height: 500px;"></div>
+        <div id="chart-pie" style="flex: 1; min-width: 0; height: 500px;"></div>
+    </div>
 
-<script>
-// 年度数据（升序排列）
-@@ -117,7 +115,7 @@ <h2>4. 研究领域分布</h2>
-tooltip: { valueSuffix: ' 次' }
-});
+    <script>
+        // 年度数据（升序排列）
+        const yearData = [
+            { "name": "1947年", "y": 1 }, { "name": "1950年", "y": 1 }, { "name": "1953年", "y": 1 },
+            { "name": "1956年", "y": 3 }, { "name": "1957年", "y": 2 }, { "name": "1958年", "y": 2 },
+            { "name": "1959年", "y": 4 }, { "name": "1960年", "y": 4 }, { "name": "1961年", "y": 2 },
+            { "name": "1962年", "y": 2 }, { "name": "1963年", "y": 1 }, { "name": "1964年", "y": 4 },
+            { "name": "1965年", "y": 1 }, { "name": "1973年", "y": 2 }, { "name": "1974年", "y": 2 },
+            { "name": "1975年", "y": 2 }, { "name": "1976年", "y": 2 }, { "name": "1977年", "y": 5 },
+            { "name": "1978年", "y": 10 }, { "name": "1979年", "y": 27 }, { "name": "1980年", "y": 28 },
+            { "name": "1981年", "y": 26 }, { "name": "1982年", "y": 33 }, { "name": "1983年", "y": 44 },
+            { "name": "1984年", "y": 62 }, { "name": "1985年", "y": 166 }, { "name": "1986年", "y": 95 },
+            { "name": "1987年", "y": 115 }, { "name": "1988年", "y": 134 }, { "name": "1989年", "y": 142 },
+            { "name": "1990年", "y": 201 }, { "name": "1991年", "y": 173 }, { "name": "1992年", "y": 171 },
+            { "name": "1993年", "y": 132 }, { "name": "1994年", "y": 225 }, { "name": "1995年", "y": 251 },
+            { "name": "1996年", "y": 230 }, { "name": "1997年", "y": 211 }, { "name": "1998年", "y": 248 },
+            { "name": "1999年", "y": 292 }, { "name": "2000年", "y": 298 }, { "name": "2001年", "y": 264 },
+            { "name": "2002年", "y": 407 }, { "name": "2003年", "y": 389 }, { "name": "2004年", "y": 440 },
+            { "name": "2005年", "y": 582 }, { "name": "2006年", "y": 577 }, { "name": "2007年", "y": 626 },
+            { "name": "2008年", "y": 688 }, { "name": "2009年", "y": 746 }, { "name": "2010年", "y": 743 },
+            { "name": "2011年", "y": 683 }, { "name": "2012年", "y": 675 }, { "name": "2013年", "y": 745 },
+            { "name": "2014年", "y": 841 }, { "name": "2015年", "y": 708 }, { "name": "2016年", "y": 678 },
+            { "name": "2017年", "y": 798 }, { "name": "2018年", "y": 743 }, { "name": "2019年", "y": 720 },
+            { "name": "2020年", "y": 755 }, { "name": "2021年", "y": 683 }, { "name": "2022年", "y": 685 },
+            { "name": "2023年", "y": 651 }, { "name": "2024年", "y": 601 }, { "name": "2025年", "y": 113 }
+        ];
 
-    // 研究领域分布
-    // 研究领域分布（饼图）
-const fields = [
-{"name":"自然地理学和测绘学","y":2268},{"name":"中等教育","y":1692},{"name":"海洋学","y":1600},
-{"name":"生物学","y":1569},{"name":"气象学","y":1318},{"name":"地质学","y":1161},
+        Highcharts.chart('chart-year', {
+            chart: { type: 'line' },
+            title: { text: '南极文献数量年度趋势' },
+            xAxis: {
+                categories: yearData.map(d => d.name),
+                labels: { rotation: -45 },
+                title: { text: '年份' }
+            },
+            yAxis: { title: { text: '文献数量' } },
+            series: [{
+                name: '文献数',
+                data: yearData.map(d => d.y)
+            }],
+            tooltip: { valueSuffix: ' 篇' }
+        });
+
+        // 主题分布
+        const mainTopics = [
+            { "name": "南极磷虾", "y": 775 }, { "name": "南极洲", "y": 545 }, { "name": "南极", "y": 455 },
+            { "name": "南极大陆", "y": 422 }, { "name": "南极考察", "y": 404 }, { "name": "南极科考", "y": 386 },
+            { "name": "南极冰盖", "y": 338 }, { "name": "中山站", "y": 248 }, { "name": "南极磷虾油", "y": 189 },
+            { "name": "南极长城站", "y": 177 }, { "name": "南大洋", "y": 177 }, { "name": "南极地区", "y": 175 },
+            { "name": "普里兹湾", "y": 170 }, { "name": "南极中山站", "y": 165 }, { "name": "长城站", "y": 155 },
+            { "name": "南极半岛", "y": 148 }, { "name": "企鹅", "y": 130 }, { "name": "南极海冰", "y": 122 },
+            { "name": "东南极", "y": 115 }, { "name": "南极冰", "y": 103 }
+        ];
+
+        Highcharts.chart('chart-main-topic', {
+            chart: { type: 'column' },
+            title: { text: '南极主题分布' },
+            xAxis: {
+                categories: mainTopics.map(d => d.name),
+                labels: { rotation: -45 },
+                title: { text: '主题' }
+            },
+            yAxis: { title: { text: '提及次数' } },
+            series: [{
+                name: '主主题',
+                data: mainTopics.map(d => d.y)
+            }],
+            tooltip: { valueSuffix: ' 次' }
+        });
+
+        // 次要主题分布
+        const subTopics = [
+            { "name": "南极大陆", "y": 855 }, { "name": "南极地区", "y": 718 }, { "name": "南极考察", "y": 699 },
+            { "name": "极地", "y": 536 }, { "name": "南极洲", "y": 522 }, { "name": "南极冰盖", "y": 501 },
+            { "name": "中山站", "y": 435 }, { "name": "南极科考", "y": 370 }, { "name": "北极地区", "y": 270 },
+            { "name": "南大洋", "y": 248 }, { "name": "长城站", "y": 243 }, { "name": "南极", "y": 242 },
+            { "name": "南极半岛", "y": 238 }, { "name": "考察队员", "y": 222 }, { "name": "昆仑站", "y": 216 },
+            { "name": "气候变化", "y": 183 }, { "name": "南极点", "y": 182 }, { "name": "极地考察", "y": 160 },
+            { "name": "南极磷虾", "y": 155 }, { "name": "考察站", "y": 140 }
+        ];
+
+        Highcharts.chart('chart-sub-topic', {
+            chart: { type: 'column' },
+            title: { text: '南极次要主题分布' },
+            xAxis: {
+                categories: subTopics.map(d => d.name),
+                labels: { rotation: -45 },
+                title: { text: '次要主题' }
+            },
+            yAxis: { title: { text: '提及次数' } },
+            series: [{
+                name: '次要主题',
+                data: subTopics.map(d => d.y)
+            }],
+            tooltip: { valueSuffix: ' 次' }
+        });
+
+        // 研究领域分布（饼图）
+        const fields = [
+            { "name": "自然地理学和测绘学", "y": 2268 }, { "name": "中等教育", "y": 1692 }, { "name": "海洋学", "y": 1600 },
+            { "name": "生物学", "y": 1569 }, { "name": "气象学", "y": 1318 }, { "name": "地质学", "y": 1161 },
+            { "name": "初等教育", "y": 1138 }, { "name": "地球物理学", "y": 1025 }, { "name": "环境科学与资源利用", "y": 881 },
+            { "name": "轻工业手工业", "y": 822 }, { "name": "水产和渔业", "y": 781 }, { "name": "天文学", "y": 743 },
+            { "name": "自然科学理论与方法", "y": 607 }, { "name": "国际法", "y": 471 }, { "name": "工业经济", "y": 461 },
+            { "name": "航空航天科学与工程", "y": 356 }, { "name": "人物传记", "y": 329 }, { "name": "中国政治与国际政治", "y": 324 },
+            { "name": "船舶工业", "y": 224 }, { "name": "科学研究管理", "y": 224 }
+        ];
+
+        Highcharts.chart('chart-pie', {
+            chart: { type: 'pie' },
+            title: { text: '研究领域分布' },
+            series: [{
+                name: '研究领域',
+                data: fields.map(d => ({ name: d.name, y: d.y }))
+            }],
+            tooltip: { pointFormat: '{point.name}: <b>{point.percentage:.1f}%</b>' }
+        });
+    </script>
+</body>
+
+</html>
